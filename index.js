@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000 ;
@@ -18,17 +18,39 @@ async function run(){
 
     try{ 
 
-        const CategoriesCollection = client.db('furnituredb').collection('categories');
-       
-      
+        const categoriesCollection = client.db('furnituredb').collection('categories');
+        const productCollection = client.db('furnituredb').collection('products');
+        const usersCollection = client.db('furnituredb').collection('users');
+        
         app.get('/categories', async (req,res)=>{
 
             const query = {};
-            const result = await CategoriesCollection.find(query).toArray()
+            const result = await categoriesCollection.find(query).toArray()
             res.send(result)
 
         })
-        
+
+       //  get categories data filter Api
+
+//        app.get('/categories/:id', async(req,res)=>{
+
+//         const id = req.params.id;
+//         const filter ={_id: new ObjectId(id)}
+//         const category = await categoriesCollection.findOne(filter)
+//         const query = {category:category.category}
+//         const result = await productCollection.find(query).toArray()
+//         res.send(result)
+//   })
+       
+  
+  
+      //  get  users Api
+
+      app.post('/users',async(req,res)=>{
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        res.send(result)
+   })
 
     }
 

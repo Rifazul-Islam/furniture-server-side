@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const cors = require('cors');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000 ;
@@ -19,31 +19,33 @@ async function run(){
     try{ 
 
         const categoriesCollection = client.db('furnituredb').collection('categories');
-        const productCollection = client.db('furnituredb').collection('products');
+        const allProductCollection = client.db('furnituredb').collection('products');
         const usersCollection = client.db('furnituredb').collection('users');
-        
-        app.get('/categories', async (req,res)=>{
+        const sellerProductsCollection = client.db('furnituredb').collection('sellerProducts')
 
+        app.get('/categories', async (req,res)=>{
             const query = {};
             const result = await categoriesCollection.find(query).toArray()
             res.send(result)
 
         })
 
-       //  get categories data filter Api
+        
+       //  get categories data filter api
 
-//        app.get('/categories/:id', async(req,res)=>{
+       app.get('/categories/:id', async(req,res)=>{
 
-//         const id = req.params.id;
-//         const filter ={_id: new ObjectId(id)}
-//         const category = await categoriesCollection.findOne(filter)
-//         const query = {category:category.category}
-//         const result = await productCollection.find(query).toArray()
-//         res.send(result)
-//   })
+        const id = req.params.id;
+        const filter ={_id : new ObjectId(id)}
+        const category = await categoriesCollection.findOne(filter)
+        const query = {category:category.category}
+        const result = await allProductCollection.find(query).toArray()
+        res.send(result)
+
+      
+  })
        
-  
-  
+
       //  get  users Api
 
       app.post('/users',async(req,res)=>{
@@ -51,6 +53,25 @@ async function run(){
         const result = await usersCollection.insertOne(user);
         res.send(result)
    })
+
+
+
+//   post sellerProducts methoad 
+    
+app.post('/sellerProducts',async(req,res)=>{
+
+    const product = req.body;
+    const result = await sellerProductsCollection.insertOne(product)
+    const resul = await allProductCollection.insertOne(product)
+    res.send(result)
+
+})
+
+
+
+
+
+
 
     }
 

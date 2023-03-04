@@ -68,6 +68,12 @@ app.post('/sellerProducts',async(req,res)=>{
 })
 
 
+app.get('/sellerProducts', async(req,res)=>{
+
+    const query = {};
+    const products = await sellerProductsCollection.find(query).toArray()
+    res.send(products)
+})
 
 
 

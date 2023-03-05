@@ -68,8 +68,29 @@ async function run(){
   })
 
 
+ //  get check seller role Api and buyer verify
+  app.get('/buyers', async(req,res)=>{
+
+    const filter ={role:'buyer'}
+    const result = await usersCollection.find(filter).toArray()
+   res.send(result)
+     
+})
 
 
+
+  // specing buyer delete 
+
+  app.delete('/buyers/:id',async(req,res)=>{
+
+    const id = req.params.id;
+    const query={_id:new ObjectId(id)}
+    const buyer = await usersCollection.deleteOne(query)
+    res.send(buyer)
+})
+
+
+    //  get check buyer role Api
 
    app.get('/users/buyer/:email',async(req,res)=>{
 

@@ -132,6 +132,16 @@ app.get('/bookings', jwtverify, async (req,res)=>{
 
 
 
+    // get  Specefic  id  payment  Api 
+    app.get('/bookings/:id',async(req,res)=>{
+
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const payment = await bookingsCollection.findOne(query)
+        res.send(payment)
+})
+
+
 
     //  get check seller role Api
 
